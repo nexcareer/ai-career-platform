@@ -1,4 +1,4 @@
-# 🎯 NexCareer — AI-Driven Career Intelligence Platform
+# NexCareer — AI-Driven Career Intelligence Platform
 
 ## Overview
 
@@ -209,4 +209,4 @@ curl -X GET "http://127.0.0.1:8000/jobs?query=python&per_page=10" \
 
 
 
-**🎉 Thank you for using NexCareer!**
+** Thank you for using NexCareer!**
