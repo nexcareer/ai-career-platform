@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — NexCareer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070d; --surface: #0d0f1a; --surface2: #13162a;
+    --border: rgba(255,255,255,0.07);
+    --accent: #5b7fff; --accent2: #a259ff; --accent3: #00e5c0;
+    --text: #eaeeff; --muted: #7b82a8;
+    --danger: #ff5b5b; --success: #00e5a0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .orb {
+    position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none;
+  }
+  .orb1 {
+    width: 500px; height: 500px; top: -150px; right: -100px;
+    background: radial-gradient(circle, rgba(162,89,255,0.2), transparent 70%);
+    animation: float1 9s ease-in-out infinite;
+  }
+  .orb2 {
+    width: 400px; height: 400px; bottom: -100px; left: -100px;
+    background: radial-gradient(circle, rgba(0,229,192,0.12), transparent 70%);
+    animation: float2 11s ease-in-out infinite;
+  }
+  @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,15px)} }
+  @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(15px,-20px)} }
+
+  .card {
+    position: relative; z-index: 1;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 24px; padding: 48px 40px;
+    width: 100%; max-width: 460px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+
+  .logo {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-align: center; margin-bottom: 8px;
+  }
+  .subtitle { text-align: center; color: var(--muted); font-size: 0.9rem; margin-bottom: 36px; }
+
+  .form-group { margin-bottom: 18px; }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
+  input, select {
+    width: 100%; padding: 14px 16px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s; outline: none;
+  }
+  input:focus, select:focus {
+    border-color: rgba(91,127,255,0.5);
+    box-shadow: 0 0 0 3px rgba(91,127,255,0.1);
+  }
+  input::placeholder { color: var(--muted); opacity: 0.6; }
+  select option { background: #13162a; color: var(--text); }
+
+  .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .role-option { display: none; }
+  .role-label {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 8px; border: 1px solid var(--border); border-radius: 12px;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+    background: var(--surface2);
+  }
+  .role-label:hover { border-color: rgba(91,127,255,0.4); }
+  .role-option:checked + .role-label {
+    border-color: var(--accent);
+    background: rgba(91,127,255,0.1);
+    box-shadow: 0 0 0 2px rgba(91,127,255,0.2);
+  }
+  .role-emoji { font-size: 1.5rem; }
+  .role-name { font-size: 0.78rem; font-weight: 500; color: var(--muted); }
+  .role-option:checked + .role-label .role-name { color: var(--accent); }
+
+  .btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff; border: none; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 1rem;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(91,127,255,0.3);
+    margin-top: 8px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(91,127,255,0.4); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .divider {
+    text-align: center; color: var(--muted); font-size: 0.82rem;
+    margin: 24px 0; position: relative;
+  }
+  .divider::before, .divider::after {
+    content: ''; position: absolute; top: 50%;
+    width: 40%; height: 1px; background: var(--border);
+  }
+  .divider::before { left: 0; } .divider::after { right: 0; }
+
+  .link-row { text-align: center; font-size: 0.88rem; color: var(--muted); }
+  .link-row a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .link-row a:hover { text-decoration: underline; }
+
+  .alert {
+    padding: 12px 16px; border-radius: 10px; font-size: 0.86rem;
+    margin-bottom: 20px; display: none;
+  }
+  .alert.error { background: rgba(255,91,91,0.1); border: 1px solid rgba(255,91,91,0.25); color: var(--danger); }
+  .alert.success { background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.25); color: var(--success); }
+
+  .loading { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .back-link { display: block; text-align: center; margin-top: 20px; font-size: 0.82rem; color: var(--muted); text-decoration: none; }
+  .back-link:hover { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div class="card">
+  <div class="logo">NexCareer</div>
+  <div class="subtitle">Create an account — it's free</div>
+
+  <div class="alert error" id="alertError"></div>
+  <div class="alert success" id="alertSuccess"></div>
+
+  <div class="form-group">
+    <label for="name">Your Name</label>
+    <input type="text" id="name" placeholder="John Smith">
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="your@email.com">
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="At least 6 characters">
+  </div>
+
+  <div class="form-group">
+    <label>Your Role</label>
+    <div class="role-grid">
+      <div>
+        <input type="radio" name="role" id="role-professional" value="professional" class="role-option" checked>
+        <label class="role-label" for="role-professional">
+          <span class="role-emoji">💼</span>
+          <span class="role-name">Professional</span>
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="role" id="role-student" value="student" class="role-option">
+        <label class="role-label" for="role-student">
+          <span class="role-emoji">🎓</span>
+          <span class="role-name">Student</span>
+        </label>
+      </div>
+      <div>
+        <input type="radio" name="role" id="role-employer" value="employer" class="role-option">
+        <label class="role-label" for="role-employer">
+          <span class="role-emoji">🏢</span>
+          <span class="role-name">Employer</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn" id="regBtn" onclick="doRegister()">Create Account</button>
+
+  <div class="divider">already have an account?</div>
+
+  <div class="link-row">
+    <a href="login.html">Sign In</a>
+  </div>
+
+  <a href="index.html" class="back-link">← Back to Home</a>
+</div>
+
+<script>
+  const API = "http://127.0.0.1:8000";
+
+  if (localStorage.getItem("token")) {
+    window.location.href = "dashboard.html";
+  }
+
+  async function doRegister() {
+    const name     = document.getElementById("name").value.trim();
+    const email    = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const role     = document.querySelector('input[name="role"]:checked').value;
+    const btn      = document.getElementById("regBtn");
+
+    hideAlerts();
+
+    if (!name || !email || !password) {
+      showError("Please fill in all fields");
+      return;
+    }
+    if (password.length < 6) {
+      showError("Password must be at least 6 characters");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span>Creating account...';
+
+    try {
+      const res = await fetch(`${API}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, role })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError(data.detail || "Registration error");
+        return;
+      }
+
+      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      showSuccess("Account created! Redirecting...");
+      setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
+
+    } catch (err) {
+      showError("Could not connect to the server. Make sure the backend is running.");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = "Create Account";
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById("alertError");
+    el.textContent = "❌ " + msg;
+    el.style.display = "block";
+  }
+  function showSuccess(msg) {
+    const el = document.getElementById("alertSuccess");
+    el.textContent = "✅ " + msg;
+    el.style.display = "block";
+  }
+  function hideAlerts() {
+    document.getElementById("alertError").style.display = "none";
+    document.getElementById("alertSuccess").style.display = "none";
+  }
+</script>
+</body>
+</html>
