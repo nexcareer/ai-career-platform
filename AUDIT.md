@@ -1,21 +1,21 @@
 # Repository Audit
 
-## Score: 6/10
+## Score: 8/10
 
 ## README quality
-README exists and provides general information about the project, but it can be improved with clearer installation, usage instructions, and feature descriptions.
+The repository includes a README file with project information. It can still be improved with clearer installation steps, usage instructions, and screenshots.
 
 ## Folder structure
-The repository has a basic structure with backend and frontend folders, but some files were originally placed in the root directory and needed reorganization.
+The repository is organized into meaningful folders such as backend, frontend, assets, docs, tests, and src. The structure is much cleaner now, although some parts could still be consolidated further.
 
 ## File naming consistency
-Most file names are understandable, but data and support files needed to be moved into more appropriate folders.
+Most file names are clear and understandable. Data files are now grouped properly inside the assets/data folder.
 
 ## Essential files
-README.md and .gitignore are present. AUDIT.md and LICENSE are required to complete the repository professionally.
+The repository contains important files such as README.md, .gitignore, LICENSE, and AUDIT.md. Dependency information is also available in the backend requirements file.
 
 ## Commit history quality
-The repository has a visible commit history, but structure and file organization can still be improved for a more professional presentation.
+The repository has a visible commit history showing active updates and improvements. Commit messages are understandable, though they can still be made more consistent and professional.
 
 ## Conclusion
-The project has a good base and working structure, but it needed cleanup and better organization to become refactor-ready.
+The repository is well organized and includes the main elements of a professional GitHub project. Some improvements are still possible, but overall it is in good condition and close to the required structure.
