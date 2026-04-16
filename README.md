@@ -34,19 +34,18 @@
 ##  Project Structure
 
 ```
-NexCareer/
+ai-career-platform/
+├── assets/
+│   └── data/
 ├── backend/
-│   ├── main.py               # FastAPI application (628 lines)
-│   ├── requirements.txt       # Python dependencies
-│   └── NexCareer.db          # SQLite database (462 vacancies)
+├── docs/
 ├── frontend/
-│   ├── index.html            # Landing page
-│   ├── login.html            # Login
-│   ├── register.html         # Registration
-│   ├── dashboard.html        # User dashboard
-│   └── GUIDE.md              # Documentation
-├── .gitignore
-└── README.md
+├── src/
+├── tests/
+├── AUDIT.md
+├── LICENSE
+├── README.md
+└── .gitignore
 ```
 
 ---
