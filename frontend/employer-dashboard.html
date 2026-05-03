@@ -1,0 +1,489 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employer Dashboard - NexCareer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#06070d; --surface:#0d0f1a; --surface2:#13162a; --surface3:#1a1d30;
+  --border:rgba(255,255,255,.08); --border2:rgba(255,255,255,.14);
+  --accent:#5b7fff; --accent2:#a259ff; --accent3:#00e5c0;
+  --text:#eaeeff; --muted:#7b82a8; --danger:#ff5b5b; --success:#00e5a0; --warning:#ffb347;
+  --side:240px; --r:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--side);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50}
+.logo{font-family:"Syne",sans-serif;font-weight:800;font-size:1.3rem;padding:26px 22px 6px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{padding:0 22px 22px;color:var(--muted);font-size:.72rem;border-bottom:1px solid var(--border)}
+.nav{padding:14px 10px;display:flex;flex-direction:column;gap:4px;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r);color:var(--muted);cursor:pointer;border:1px solid transparent;font-size:.9rem;transition:.18s}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(91,127,255,.12);border-color:rgba(91,127,255,.24);color:var(--accent)}
+.nav-icon{width:22px;text-align:center;font-size:1rem}
+.sidebar-bottom{padding:14px 10px;border-top:1px solid var(--border)}
+.logout{width:100%;padding:10px 12px;border-radius:var(--r);border:1px solid transparent;background:none;color:var(--danger);font:inherit;cursor:pointer;text-align:left}
+.logout:hover{background:rgba(255,91,91,.1);border-color:rgba(255,91,91,.22)}
+.main{margin-left:var(--side);min-height:100vh;flex:1;display:flex;flex-direction:column}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:30}
+.top-title{font-family:"Syne",sans-serif;font-weight:700}
+.user-badge{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:6px 14px 6px 7px}
+.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));font-family:"Syne",sans-serif;font-weight:700}
+.user-name{font-size:.86rem;font-weight:600}.user-role{font-size:.72rem;color:var(--muted)}
+.content{padding:30px 32px;max-width:1280px;width:100%}
+.section{display:none}.section.active{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
+.section-head{margin-bottom:24px}.section-head h1{font-family:"Syne",sans-serif;font-size:1.55rem;margin-bottom:4px}.section-head p{color:var(--muted);font-size:.9rem}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi,.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.kpi{padding:18px 20px}.kpi-label{font-size:.73rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}.kpi-value{font-family:"Syne",sans-serif;font-size:1.9rem;font-weight:700}.kpi-sub{font-size:.75rem;color:var(--muted);margin-top:5px}
+.blue{color:var(--accent)}.purple{color:var(--accent2)}.green{color:var(--success)}.teal{color:var(--accent3)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{padding:20px 22px;margin-bottom:18px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.panel-title{font-family:"Syne",sans-serif;font-weight:700;font-size:1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:0;border-radius:9px;padding:10px 16px;font:600 .88rem "DM Sans",sans-serif;cursor:pointer;transition:.18s;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 16px rgba(91,127,255,.24)}.btn-primary:hover{transform:translateY(-1px)}
+.btn-secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text)}.btn-secondary:hover{border-color:var(--border2);background:var(--surface3)}
+.btn-danger{background:rgba(255,91,91,.12);border:1px solid rgba(255,91,91,.25);color:var(--danger)}
+.btn-teal{background:rgba(0,229,192,.1);border:1px solid rgba(0,229,192,.25);color:var(--accent3)}
+.btn-sm{padding:7px 11px;font-size:.78rem}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group.full{grid-column:1/-1}
+label{display:block;color:var(--muted);font-size:.8rem;margin-bottom:6px}
+input,textarea,select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;font-size:.9rem;padding:11px 13px;outline:none}
+textarea{min-height:124px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:rgba(91,127,255,.55);box-shadow:0 0 0 3px rgba(91,127,255,.1)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.filters input,.filters select{max-width:260px}
+.table-wrap{overflow-x:auto}.tbl{width:100%;border-collapse:collapse;font-size:.86rem}.tbl th{text-align:left;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;padding:10px 12px;border-bottom:1px solid var(--border)}.tbl td{padding:12px;border-bottom:1px solid var(--border);vertical-align:middle}.tbl tr:last-child td{border-bottom:0}.tbl tr:hover td{background:rgba(255,255,255,.025)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}.chip{font-size:.72rem;padding:3px 8px;border-radius:999px;background:rgba(91,127,255,.1);border:1px solid rgba(91,127,255,.25);color:var(--accent)}.chip.good{background:rgba(0,229,160,.08);border-color:rgba(0,229,160,.25);color:var(--success)}.chip.bad{background:rgba(255,91,91,.08);border-color:rgba(255,91,91,.24);color:var(--danger)}.chip.muted{background:rgba(255,255,255,.05);border-color:var(--border2);color:var(--muted)}
+.badge{display:inline-flex;border-radius:999px;padding:3px 9px;font-size:.72rem;font-weight:600;border:1px solid}.badge-blue{background:rgba(91,127,255,.12);border-color:rgba(91,127,255,.25);color:var(--accent)}.badge-green{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.25);color:var(--success)}.badge-yellow{background:rgba(255,179,71,.1);border-color:rgba(255,179,71,.25);color:var(--warning)}.badge-red{background:rgba(255,91,91,.1);border-color:rgba(255,91,91,.25);color:var(--danger)}.badge-gray{background:rgba(255,255,255,.05);border-color:var(--border2);color:var(--muted)}
+.alert{padding:11px 14px;border-radius:9px;font-size:.84rem;margin-bottom:14px}.alert-error{background:rgba(255,91,91,.1);border:1px solid rgba(255,91,91,.25);color:var(--danger)}.alert-success{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.25);color:var(--success)}.alert-info{background:rgba(91,127,255,.1);border:1px solid rgba(91,127,255,.25);color:var(--accent)}
+.empty{text-align:center;color:var(--muted);padding:34px 18px}.empty-icon{font-size:2rem;margin-bottom:8px}.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.score{display:flex;align-items:center;gap:8px;min-width:128px}.bar{height:6px;background:var(--surface2);border-radius:999px;overflow:hidden;flex:1}.fill{height:100%;border-radius:999px}
+.modal-overlay{position:fixed;inset:0;background:rgba(6,7,13,.86);backdrop-filter:blur(5px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}.modal-overlay.open{display:flex}
+.modal{width:min(980px,100%);max-height:86vh;overflow:auto;background:var(--surface);border:1px solid var(--border2);border-radius:12px}.modal-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:16px 18px;display:flex;justify-content:space-between;align-items:center}.modal-title{font-family:"Syne",sans-serif;font-weight:700}.modal-body{padding:18px}.modal-close{background:none;border:0;color:var(--muted);font-size:1.25rem;cursor:pointer}
+@media(max-width:960px){.kpis,.grid2{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:auto}}
+@media(max-width:680px){body{display:block}.sidebar{position:static;width:100%;min-height:0}.nav{display:grid;grid-template-columns:1fr 1fr}.main{margin-left:0}.topbar{padding:0 16px}.content{padding:18px 14px}.kpis,.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo">NexCareer</div>
+  <div class="tagline">Employer workspace</div>
+  <nav class="nav">
+    <div class="nav-item active" data-section="overview"><span class="nav-icon">📊</span> Overview</div>
+    <div class="nav-item" data-section="job-form"><span class="nav-icon">➕</span> Post Job</div>
+    <div class="nav-item" data-section="jobs"><span class="nav-icon">💼</span> Jobs</div>
+    <div class="nav-item" data-section="candidates"><span class="nav-icon">👥</span> Candidates</div>
+    <div class="nav-item" data-section="telegram"><span class="nav-icon">📱</span> Market</div>
+    <div class="nav-item" data-section="profile"><span class="nav-icon">🏢</span> Profile</div>
+  </nav>
+  <div class="sidebar-bottom"><button class="logout" onclick="logout()">Sign Out</button></div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="top-title" id="topTitle">Overview</div>
+    <div class="user-badge">
+      <div class="avatar" id="avatar">E</div>
+      <div><div class="user-name" id="userName">Loading...</div><div class="user-role">Employer</div></div>
+    </div>
+  </header>
+  <div class="content">
+    <section class="section active" id="sec-overview">
+      <div class="section-head"><h1>Hiring Overview</h1><p>Your jobs, candidates, matches and market signal in one place.</p></div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-label">Jobs Posted</div><div class="kpi-value blue" id="kpiJobs">-</div><div class="kpi-sub">owned by your account</div></div>
+        <div class="kpi"><div class="kpi-label">Candidates</div><div class="kpi-value purple" id="kpiCandidates">-</div><div class="kpi-sub">with uploaded CVs</div></div>
+        <div class="kpi"><div class="kpi-label">Avg Match</div><div class="kpi-value green" id="kpiMatch">-</div><div class="kpi-sub">latest calculations</div></div>
+        <div class="kpi"><div class="kpi-label">TG Market</div><div class="kpi-value teal" id="kpiTelegram">-</div><div class="kpi-sub">imported vacancies</div></div>
+      </div>
+      <div class="grid2">
+        <div class="panel"><div class="panel-head"><div class="panel-title">Latest Jobs</div><button class="btn btn-secondary btn-sm" onclick="showSection('job-form')">Post</button></div><div id="latestJobs"></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Top Candidates</div><button class="btn btn-secondary btn-sm" onclick="showSection('candidates')">View</button></div><div id="topCandidates"></div></div>
+      </div>
+      <div class="panel"><div class="panel-head"><div class="panel-title">Market Snapshot</div><button class="btn btn-teal btn-sm" onclick="showSection('telegram')">Explore</button></div><div id="marketSnapshot" class="alert alert-info">Open Market to browse Telegram vacancies and filter by city, keyword or skill.</div></div>
+    </section>
+
+    <section class="section" id="sec-job-form">
+      <div class="section-head"><h1 id="formTitle">Post a Job</h1><p>Create a listing with clear skills so candidate matching works accurately.</p></div>
+      <div class="panel">
+        <div id="jobAlert"></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Job title *</label><input id="jTitle" placeholder="Senior Python Developer"></div>
+          <div class="form-group"><label>Company *</label><input id="jCompany" placeholder="NexCareer"></div>
+          <div class="form-group"><label>Location</label><input id="jLocation" placeholder="Almaty, Remote"></div>
+          <div class="form-group"><label>Salary</label><input id="jSalary" placeholder="800,000-1,200,000 KZT"></div>
+          <div class="form-group full"><label>Required skills *</label><input id="jSkills" placeholder="python, fastapi, postgresql, docker, git"></div>
+          <div class="form-group full"><label>Description *</label><textarea id="jDescription" placeholder="Responsibilities, requirements, team context..."></textarea></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="saveJobBtn" onclick="saveJob()">Post Job</button>
+          <button class="btn btn-secondary" onclick="resetJobForm()">Clear</button>
+          <button class="btn btn-secondary" onclick="showSection('jobs')">Back to Jobs</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="sec-jobs">
+      <div class="section-head"><h1>My Jobs</h1><p>Edit postings, delete old roles, or match a role against all candidate CVs.</p></div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Active Listings</div><button class="btn btn-primary btn-sm" onclick="showSection('job-form')">New Job</button></div>
+        <div class="filters"><input id="jobFilter" oninput="renderJobs()" placeholder="Filter by title, company or skill"></div>
+        <div id="jobsList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="sec-candidates">
+      <div class="section-head"><h1>Candidate Pool</h1><p>Browse students and professionals with uploaded CVs.</p></div>
+      <div class="panel">
+        <div class="filters">
+          <input id="candidateFilter" oninput="renderCandidates()" placeholder="Filter by name, role or skill">
+          <select id="candidateRole" onchange="renderCandidates()"><option value="">All roles</option><option value="student">Students</option><option value="professional">Professionals</option></select>
+        </div>
+        <div id="candidateList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="sec-telegram">
+      <div class="section-head"><h1>Telegram Job Market</h1><p>Explore imported vacancies from Telegram channels.</p></div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-label">Total Jobs</div><div class="kpi-value blue" id="tgTotal">-</div></div>
+        <div class="kpi"><div class="kpi-label">Channels</div><div class="kpi-value purple" id="tgChannels">-</div></div>
+        <div class="kpi"><div class="kpi-label">Cities</div><div class="kpi-value green" id="tgCities">-</div></div>
+        <div class="kpi"><div class="kpi-label">Avg Views</div><div class="kpi-value teal" id="tgViews">-</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">Vacancies</div><button class="btn btn-teal btn-sm" onclick="loadTelegram()">Refresh</button></div>
+        <div class="filters">
+          <input id="tgQuery" placeholder="Keyword">
+          <input id="tgCity" placeholder="City">
+          <input id="tgSkill" placeholder="Skill">
+          <select id="tgFormat"><option value="">Any format</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="office">Office</option></select>
+          <select id="tgSeniority"><option value="">Any seniority</option><option value="junior">Junior</option><option value="middle">Middle</option><option value="senior">Senior</option><option value="lead">Lead</option></select>
+          <button class="btn btn-secondary btn-sm" onclick="loadTelegram()">Search</button>
+        </div>
+        <div id="telegramList"></div>
+      </div>
+    </section>
+
+    <section class="section" id="sec-profile">
+      <div class="section-head"><h1>Company Profile</h1><p>Keep employer information consistent across your workspace.</p></div>
+      <div class="panel">
+        <div id="profileAlert"></div>
+        <div class="form-grid">
+          <div class="form-group"><label>Company name</label><input id="pCompany" placeholder="Company"></div>
+          <div class="form-group"><label>Industry</label><input id="pIndustry" placeholder="Fintech, EdTech, SaaS"></div>
+          <div class="form-group full"><label>Recruiter position</label><input id="pPosition" placeholder="HR Manager, Tech Recruiter"></div>
+        </div>
+        <div style="margin-top:18px"><button class="btn btn-primary" onclick="saveProfile()">Save Profile</button></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="modal-overlay" id="matchModal" onclick="closeModalOnBackdrop(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head"><div class="modal-title" id="modalTitle">Candidate Matches</div><button class="modal-close" onclick="closeMatchModal()">x</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+const state = { user:null, profile:null, jobs:[], candidates:[], telegram:[], editingJobId:null };
+const titles = { overview:"Overview", "job-form":"Post Job", jobs:"Jobs", candidates:"Candidates", telegram:"Market", profile:"Profile" };
+
+document.querySelectorAll(".nav-item").forEach(item => item.addEventListener("click", () => showSection(item.dataset.section)));
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeMatchModal(); });
+init();
+
+async function init() {
+  const token = localStorage.getItem("token");
+  if (!token) return go("login.html");
+  try {
+    const me = await api("/auth/me");
+    state.user = me;
+    if (me.role === "student") return go("student-dashboard.html");
+    if (me.role === "professional") return go("professional-dashboard.html");
+    if (me.role !== "employer") return go("login.html");
+    renderUser();
+    await loadOverview();
+  } catch (e) {
+    localStorage.clear();
+    go("login.html");
+  }
+}
+
+function go(url){ window.location.href = url; }
+function logout(){ localStorage.clear(); go("login.html"); }
+async function api(path, options = {}) {
+  const token = localStorage.getItem("token");
+  const headers = { Authorization:`Bearer ${token}`, ...(options.headers || {}) };
+  const res = await fetch(API + path, { ...options, headers });
+  if (res.status === 401) { logout(); throw new Error("Unauthorized"); }
+  let data = null;
+  try { data = await res.json(); } catch { data = null; }
+  if (!res.ok) throw new Error(data?.detail || data?.message || "Request failed");
+  return data;
+}
+function jsonApi(path, method, body){ return api(path, { method, headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body) }); }
+function esc(v){ return String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+function date(v){ return v ? new Date(v).toLocaleDateString() : "-"; }
+function parseSkills(v){ if (Array.isArray(v)) return v.map(String).filter(Boolean); return String(v || "").split(",").map(s => s.trim()).filter(Boolean); }
+function chips(v, max = 5, kind = "") {
+  const list = parseSkills(v);
+  if (!list.length) return '<span class="chip muted">none</span>';
+  const visible = list.slice(0, max).map(s => `<span class="chip ${kind}">${esc(s)}</span>`).join("");
+  return visible + (list.length > max ? `<span class="chip muted">+${list.length - max}</span>` : "");
+}
+function scoreColor(score){ return score >= 80 ? "var(--success)" : score >= 60 ? "var(--warning)" : "var(--danger)"; }
+function levelClass(level){ const l = String(level || "").toLowerCase(); if (l === "high") return "badge-green"; if (l === "medium") return "badge-yellow"; if (l === "low") return "badge-red"; return "badge-gray"; }
+
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.section === id));
+  document.getElementById("sec-" + id).classList.add("active");
+  document.getElementById("topTitle").textContent = titles[id] || id;
+  if (id === "overview") loadOverview();
+  if (id === "jobs") loadJobs();
+  if (id === "candidates") loadCandidates();
+  if (id === "telegram") loadTelegram();
+  if (id === "profile") populateProfile();
+}
+
+function renderUser() {
+  const name = state.user?.name || "Employer";
+  document.getElementById("userName").textContent = name;
+  document.getElementById("avatar").textContent = name.slice(0,1).toUpperCase();
+}
+
+async function loadOverview() {
+  const d = await api("/employer/dashboard");
+  state.profile = d.profile || {};
+  document.getElementById("kpiJobs").textContent = d.jobs_posted ?? 0;
+  document.getElementById("kpiCandidates").textContent = d.total_candidates ?? 0;
+  document.getElementById("kpiMatch").textContent = `${d.avg_match_score ?? 0}%`;
+  document.getElementById("kpiTelegram").textContent = d.telegram_jobs_count ?? 0;
+  renderLatestJobs(d.latest_jobs || []);
+  renderTopCandidates(d.top_candidates || []);
+}
+
+function renderLatestJobs(jobs) {
+  const el = document.getElementById("latestJobs");
+  if (!jobs.length) return el.innerHTML = `<div class="empty"><div class="empty-icon">💼</div><p>No jobs yet.</p></div>`;
+  el.innerHTML = `<div class="table-wrap"><table class="tbl"><thead><tr><th>Job</th><th>Location</th><th>Salary</th><th>Date</th></tr></thead><tbody>${jobs.map(j => `<tr><td><strong>${esc(j.title)}</strong><br><span style="color:var(--muted);font-size:.78rem">${esc(j.company)}</span></td><td>${esc(j.location || "-")}</td><td>${esc(j.salary || "-")}</td><td>${date(j.created_at)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+function renderTopCandidates(cands) {
+  const el = document.getElementById("topCandidates");
+  if (!cands.length) return el.innerHTML = `<div class="empty"><div class="empty-icon">👥</div><p>No candidates with CVs yet.</p></div>`;
+  el.innerHTML = cands.map(c => `<div style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)"><div><strong>${esc(c.name)}</strong><div style="font-size:.76rem;color:var(--muted)">${esc(c.role)} · ${c.skills_count || 0} skills</div></div><span class="badge ${levelClass(c.readiness_level)}">${esc(c.readiness_level || "not assessed")}</span></div>`).join("");
+}
+
+function jobPayload() {
+  return {
+    title: document.getElementById("jTitle").value.trim(),
+    company: document.getElementById("jCompany").value.trim(),
+    location: document.getElementById("jLocation").value.trim() || null,
+    salary: document.getElementById("jSalary").value.trim() || null,
+    required_skills: document.getElementById("jSkills").value.trim(),
+    description: document.getElementById("jDescription").value.trim(),
+  };
+}
+
+async function saveJob() {
+  const alert = document.getElementById("jobAlert");
+  const body = jobPayload();
+  alert.innerHTML = "";
+  if (!body.title || !body.company || !body.required_skills || !body.description) {
+    alert.innerHTML = `<div class="alert alert-error">Title, company, skills and description are required.</div>`;
+    return;
+  }
+  const btn = document.getElementById("saveJobBtn");
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spin"></span> Saving`;
+  try {
+    if (state.editingJobId) {
+      await jsonApi(`/employer/jobs/${state.editingJobId}`, "PUT", body);
+      alert.innerHTML = `<div class="alert alert-success">Job updated successfully.</div>`;
+    } else {
+      await jsonApi("/employer/jobs", "POST", body);
+      alert.innerHTML = `<div class="alert alert-success">Job posted successfully.</div>`;
+    }
+    resetJobForm(false);
+    await loadJobs();
+    await loadOverview();
+  } catch (e) {
+    alert.innerHTML = `<div class="alert alert-error">${esc(e.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Post Job";
+  }
+}
+
+function resetJobForm(clearAlert = true) {
+  state.editingJobId = null;
+  ["jTitle","jCompany","jLocation","jSalary","jSkills","jDescription"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("formTitle").textContent = "Post a Job";
+  document.getElementById("saveJobBtn").textContent = "Post Job";
+  if (clearAlert) document.getElementById("jobAlert").innerHTML = "";
+}
+
+async function loadJobs() {
+  const el = document.getElementById("jobsList");
+  el.innerHTML = `<div class="empty"><span class="spin"></span><p>Loading jobs...</p></div>`;
+  try {
+    state.jobs = await api("/employer/jobs");
+    renderJobs();
+  } catch (e) {
+    el.innerHTML = `<div class="alert alert-error">${esc(e.message)}</div>`;
+  }
+}
+
+function renderJobs() {
+  const el = document.getElementById("jobsList");
+  const q = document.getElementById("jobFilter")?.value.toLowerCase() || "";
+  const jobs = state.jobs.filter(j => [j.title,j.company,j.location,j.required_skills].join(" ").toLowerCase().includes(q));
+  if (!jobs.length) return el.innerHTML = `<div class="empty"><div class="empty-icon">💼</div><p>No jobs found.</p></div>`;
+  el.innerHTML = `<div class="table-wrap"><table class="tbl"><thead><tr><th>Job</th><th>Location</th><th>Salary</th><th>Skills</th><th>Posted</th><th>Actions</th></tr></thead><tbody>${jobs.map(j => `<tr><td><strong>${esc(j.title)}</strong><br><span style="color:var(--muted);font-size:.78rem">${esc(j.company)}</span></td><td>${esc(j.location || "-")}</td><td>${esc(j.salary || "-")}</td><td><div class="chips">${chips(j.required_skills,4)}</div></td><td>${date(j.created_at)}</td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-teal btn-sm" onclick="matchCandidates(${j.id})">Match</button><button class="btn btn-secondary btn-sm" onclick="editJob(${j.id})">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteJob(${j.id})">Delete</button></div></td></tr>`).join("")}</tbody></table></div>`;
+}
+
+function editJob(id) {
+  const j = state.jobs.find(item => item.id === id);
+  if (!j) return;
+  state.editingJobId = id;
+  document.getElementById("jTitle").value = j.title || "";
+  document.getElementById("jCompany").value = j.company || "";
+  document.getElementById("jLocation").value = j.location || "";
+  document.getElementById("jSalary").value = j.salary || "";
+  document.getElementById("jSkills").value = j.required_skills || "";
+  document.getElementById("jDescription").value = j.description || "";
+  document.getElementById("formTitle").textContent = "Edit Job";
+  document.getElementById("saveJobBtn").textContent = "Save Changes";
+  showSection("job-form");
+}
+
+async function deleteJob(id) {
+  const j = state.jobs.find(item => item.id === id);
+  if (!j || !confirm(`Delete "${j.title}"?`)) return;
+  await api(`/employer/jobs/${id}`, { method:"DELETE" });
+  await loadJobs();
+  await loadOverview();
+}
+
+async function matchCandidates(jobId) {
+  const job = state.jobs.find(j => j.id === jobId) || {};
+  document.getElementById("modalTitle").textContent = `Matches for ${job.title || "job"}`;
+  document.getElementById("modalBody").innerHTML = `<div class="empty"><span class="spin"></span><p>Calculating matches...</p></div>`;
+  document.getElementById("matchModal").classList.add("open");
+  try {
+    const data = await api(`/employer/jobs/${jobId}/match-candidates`, { method:"POST" });
+    const candidates = data.candidates || [];
+    if (!candidates.length) return document.getElementById("modalBody").innerHTML = `<div class="empty"><div class="empty-icon">👥</div><p>No candidates with CVs found.</p></div>`;
+    document.getElementById("modalBody").innerHTML = `<div class="alert alert-info">${candidates.length} candidates ranked by match score.</div><div class="table-wrap"><table class="tbl"><thead><tr><th>Candidate</th><th>Match</th><th>Matched</th><th>Missing</th><th>Level</th></tr></thead><tbody>${candidates.map(c => `<tr><td><strong>${esc(c.name)}</strong><br><span style="font-size:.76rem;color:var(--muted)">${esc(c.role)}</span></td><td><div class="score"><div class="bar"><div class="fill" style="width:${Number(c.match_score)||0}%;background:${scoreColor(c.match_score)}"></div></div><strong style="color:${scoreColor(c.match_score)}">${c.match_score}%</strong></div></td><td><div class="chips">${chips(c.matched_skills,4,"good")}</div></td><td><div class="chips">${chips(c.missing_skills,4,"bad")}</div></td><td><span class="badge ${levelClass(c.readiness_level)}">${esc(c.readiness_level || "-")}</span></td></tr>`).join("")}</tbody></table></div>`;
+  } catch (e) {
+    document.getElementById("modalBody").innerHTML = `<div class="alert alert-error">${esc(e.message)}</div>`;
+  }
+}
+
+async function matchMarketJob(jobId, title) {
+  document.getElementById("modalTitle").textContent = `Market matches for ${title || "vacancy"}`;
+  document.getElementById("modalBody").innerHTML = `<div class="empty"><span class="spin"></span><p>Calculating matches...</p></div>`;
+  document.getElementById("matchModal").classList.add("open");
+  try {
+    const data = await api(`/jobs/telegram/${encodeURIComponent(jobId)}/match-candidates`, { method:"POST" });
+    const candidates = data.candidates || [];
+    const required = data.required_skills || [];
+    if (!candidates.length) return document.getElementById("modalBody").innerHTML = `<div class="empty"><div class="empty-icon">👥</div><p>No candidates with CVs found.</p></div>`;
+    document.getElementById("modalBody").innerHTML = `<div class="alert alert-info"><strong>${candidates.length}</strong> candidates ranked by this market vacancy. Required: ${required.length ? required.map(esc).join(", ") : "not specified"}</div><div class="table-wrap"><table class="tbl"><thead><tr><th>Candidate</th><th>Match</th><th>Matched</th><th>Missing</th><th>Level</th></tr></thead><tbody>${candidates.map(c => `<tr><td><strong>${esc(c.name)}</strong><br><span style="font-size:.76rem;color:var(--muted)">${esc(c.role)}</span></td><td><div class="score"><div class="bar"><div class="fill" style="width:${Number(c.match_score)||0}%;background:${scoreColor(c.match_score)}"></div></div><strong style="color:${scoreColor(c.match_score)}">${c.match_score}%</strong></div></td><td><div class="chips">${chips(c.matched_skills,5,"good")}</div></td><td><div class="chips">${chips(c.missing_skills,5,"bad")}</div></td><td><span class="badge ${levelClass(c.readiness_level)}">${esc(c.readiness_level || "-")}</span></td></tr>`).join("")}</tbody></table></div>`;
+  } catch (e) {
+    document.getElementById("modalBody").innerHTML = `<div class="alert alert-error">${esc(e.message)}</div>`;
+  }
+}
+function closeMatchModal(){ document.getElementById("matchModal").classList.remove("open"); }
+function closeModalOnBackdrop(e){ if (e.target.id === "matchModal") closeMatchModal(); }
+
+async function loadCandidates() {
+  const el = document.getElementById("candidateList");
+  el.innerHTML = `<div class="empty"><span class="spin"></span><p>Loading candidates...</p></div>`;
+  try {
+    state.candidates = await api("/employer/candidates");
+    renderCandidates();
+  } catch (e) {
+    el.innerHTML = `<div class="alert alert-error">${esc(e.message)}</div>`;
+  }
+}
+
+function renderCandidates() {
+  const el = document.getElementById("candidateList");
+  const q = document.getElementById("candidateFilter")?.value.toLowerCase() || "";
+  const role = document.getElementById("candidateRole")?.value || "";
+  const list = state.candidates.filter(c => (!role || c.role === role) && [c.name,c.email,c.role,...(c.skills || [])].join(" ").toLowerCase().includes(q));
+  if (!list.length) return el.innerHTML = `<div class="empty"><div class="empty-icon">👥</div><p>No candidates found.</p></div>`;
+  el.innerHTML = `<div class="table-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Role</th><th>Skills</th><th>CVs</th><th>Readiness</th><th>Last Upload</th></tr></thead><tbody>${list.map(c => `<tr><td><strong>${esc(c.name)}</strong><br><span style="font-size:.76rem;color:var(--muted)">${esc(c.email)}</span></td><td><span class="badge badge-blue">${esc(c.role)}</span></td><td><div class="chips">${chips(c.skills,6)}</div></td><td>${c.cv_count || 0}</td><td><span class="badge ${levelClass(c.readiness_level)}">${esc(c.readiness_level || "not assessed")}</span></td><td>${date(c.last_cv_uploaded)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+async function loadTelegram() {
+  const el = document.getElementById("telegramList");
+  el.innerHTML = `<div class="empty"><span class="spin"></span><p>Loading market data...</p></div>`;
+  try {
+    const stats = await api("/jobs/telegram/stats");
+    document.getElementById("tgTotal").textContent = stats.total || 0;
+    document.getElementById("tgChannels").textContent = Object.keys(stats.by_channel || {}).length;
+    document.getElementById("tgCities").textContent = (stats.top_cities || []).length;
+    document.getElementById("tgViews").textContent = stats.avg_views || 0;
+  } catch {}
+  try {
+    const params = new URLSearchParams({ limit:"50" });
+    const q = document.getElementById("tgQuery").value.trim();
+    const city = document.getElementById("tgCity").value.trim();
+    const skill = document.getElementById("tgSkill").value.trim();
+    const format = document.getElementById("tgFormat").value;
+    const seniority = document.getElementById("tgSeniority").value;
+    if (q) params.set("q", q);
+    if (city) params.set("city", city);
+    if (skill) params.set("skill", skill);
+    if (format) params.set("format", format);
+    if (seniority) params.set("seniority", seniority);
+    const data = await api(`/jobs/telegram?${params.toString()}`);
+    state.telegram = data.jobs || [];
+    renderTelegram();
+  } catch (e) {
+    el.innerHTML = `<div class="alert alert-info">Telegram data is empty or not imported yet.</div>`;
+  }
+}
+
+function renderTelegram() {
+  const el = document.getElementById("telegramList");
+  const jobs = state.telegram;
+  if (!jobs.length) return el.innerHTML = `<div class="empty"><div class="empty-icon">📱</div><p>No vacancies found.</p></div>`;
+  el.innerHTML = `<div style="color:var(--muted);font-size:.82rem;margin-bottom:10px">Showing ${jobs.length} vacancies</div><div class="table-wrap"><table class="tbl"><thead><tr><th>Position</th><th>Company</th><th>City</th><th>Salary</th><th>Format</th><th>Level</th><th>Skills</th><th>Actions</th></tr></thead><tbody>${jobs.map(j => `<tr><td><strong>${esc(j.position || "-")}</strong><br><span style="font-size:.75rem;color:var(--muted)">${esc(j.date || "")}</span></td><td>${esc(j.company || "-")}</td><td>${esc(j.city || "-")}</td><td>${esc(j.salary || "-")}</td><td><span class="badge badge-gray">${esc(j.work_format || "-")}</span></td><td>${esc(j.seniority || j.experience || "-")}</td><td><div class="chips">${chips(j.required_skills && j.required_skills.length ? j.required_skills : j.extracted_skills,5)}</div></td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-teal btn-sm" onclick='matchMarketJob(${JSON.stringify(String(j.id))}, ${JSON.stringify(j.position || "vacancy")})'>Match</button>${j.telegram_url || j.url ? `<a class="btn btn-secondary btn-sm" target="_blank" href="${esc(j.telegram_url || j.url)}">Open</a>` : ""}</div></td></tr>`).join("")}</tbody></table></div>`;
+}
+
+function populateProfile() {
+  const p = state.profile || {};
+  document.getElementById("pCompany").value = p.company_name || "";
+  document.getElementById("pIndustry").value = p.industry || "";
+  document.getElementById("pPosition").value = p.recruiter_position || "";
+}
+
+async function saveProfile() {
+  const alert = document.getElementById("profileAlert");
+  alert.innerHTML = "";
+  const body = {
+    company_name: document.getElementById("pCompany").value.trim() || null,
+    industry: document.getElementById("pIndustry").value.trim() || null,
+    recruiter_position: document.getElementById("pPosition").value.trim() || null,
+  };
+  try {
+    await jsonApi("/employer/profile", "POST", body);
+    state.profile = body;
+    alert.innerHTML = `<div class="alert alert-success">Profile saved.</div>`;
+    await loadOverview();
+  } catch (e) {
+    alert.innerHTML = `<div class="alert alert-error">${esc(e.message)}</div>`;
+  }
+}
+</script>
+</body>
+</html>
