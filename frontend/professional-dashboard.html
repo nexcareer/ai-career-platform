@@ -883,7 +883,7 @@ function renderDashboardWidgets() {
       salary: m.salary || "",
       meta: `${m.area || "Kazakhstan"} | ${formatSeniority(m.job_level || "unknown")} job | ${(m.missing_skills || []).length} gaps | ${(m.matched_skills || []).slice(0, 3).join(", ") || "CV match"}`,
       match: Math.round(m.match_score || 0),
-      source: m.recommendation_source || m.source || "telegram_all_posts.csv",
+      source: m.recommendation_source || m.source || "telegram_all_jobs.csv",
       url: m.url || "",
       level: formatSeniority(m.candidate_level || dashData?.cv_seniority || "unknown"),
       status: m.seniority_status || "unknown",
@@ -934,7 +934,7 @@ function renderOverviewJobs(filter = "all") {
         <div class="job-card-title">${esc(j.title)}</div>
         <div class="job-card-company">${esc(j.company)}${j.salary ? ` · <span class="salary">${esc(j.salary)}</span>` : ""}</div>
         <div class="job-card-meta">${esc(j.meta || "")}</div>
-        <span class="source-tag">${esc(j.source || "telegram_all_posts.csv")}</span>
+        <span class="source-tag">${esc(j.source || "telegram_all_jobs.csv")}</span>
         <span class="source-tag">${esc(j.engine === "groq" ? "Groq CV/job analysis" : "Fallback skills match")}</span>
         <span class="source-tag">${esc(j.level || "CV level")} -> ${esc(j.status || "level match")}</span>
         ${j.projectFit && j.projectFit !== "unknown" ? `<span class="source-tag">Projects: ${esc(j.projectFit)}</span>` : ""}
