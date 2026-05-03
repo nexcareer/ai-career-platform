@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+#from fastapi.staticfiles import StaticFiles
 from database import engine
 from models import Base
 from routes.auth_routes import router as auth_router
@@ -45,5 +45,5 @@ def health():
     return {"status": "healthy"}
 
 
-frontend_dir = Path(__file__).parent.parent / "frontend"
-app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
+#frontend_dir = Path(__file__).parent.parent / "frontend"
+#app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
