@@ -83,6 +83,8 @@ def _extract_telegram_salary(text: str) -> str:
 
 
 def _load_telegram_dataset() -> List[Dict]:
+    print(f"Telegram CSV path: {TELEGRAM_CSV_PATH}", flush=True)
+    print(f"Telegram CSV exists: {TELEGRAM_CSV_PATH.exists()}", flush=True)
     if not TELEGRAM_CSV_PATH.exists():
         return []
 
@@ -110,6 +112,7 @@ def _load_telegram_dataset() -> List[Dict]:
                 "views": row.get("views"),
                 "_search_text": text.lower(),
             })
+    print(f"Loaded Telegram jobs: {len(jobs)}", flush=True)
     return jobs
 
 
