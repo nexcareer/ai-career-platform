@@ -9,8 +9,6 @@ from routes.professional_routes import router as professional_router
 from routes.employer_routes import router as employer_router
 from routes.job_routes import router as job_router
 
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(
     title="NexCareer API",
     description="AI Career Intelligence Platform",
@@ -33,6 +31,11 @@ app.include_router(employer_router)
 app.include_router(job_router)
 
 
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+
+
 @app.get("/", tags=["Health"])
 def root():
     return {"status": "ok", "app": "NexCareer API", "version": "2.0.0", "docs": "/docs"}
@@ -40,5 +43,4 @@ def root():
 
 @app.get("/health", tags=["Health"])
 def health():
-    from datetime import datetime
-    return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+    return {"status": "healthy"}
