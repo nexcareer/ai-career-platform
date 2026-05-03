@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from database import engine
 from models import Base
 from routes.auth_routes import router as auth_router
@@ -25,6 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# API routes — registered first so they take precedence over static files
 app.include_router(auth_router)
 app.include_router(cv_router)
 app.include_router(student_router)
@@ -33,12 +35,12 @@ app.include_router(employer_router)
 app.include_router(job_router)
 
 
-@app.get("/", tags=["Health"])
-def root():
-    return {"status": "ok", "app": "NexCareer API", "version": "2.0.0", "docs": "/docs"}
-
-
 @app.get("/health", tags=["Health"])
 def health():
     from datetime import datetime
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+
+
+# Serve the frontend directory at / — must come after all API routes
+# so that API paths are never shadowed by the static file handler.
+app.mount("/", StaticFiles(directory="../frontend", html=True), name="frontend")
