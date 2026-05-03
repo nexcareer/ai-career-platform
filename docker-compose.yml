@@ -1,0 +1,15 @@
+﻿services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: NexCareer
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+    - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
