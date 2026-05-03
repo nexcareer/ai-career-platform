@@ -1,0 +1,1023 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — NexCareer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06070d; --surface: #0d0f1a; --surface2: #13162a; --surface3: #1a1d30;
+  --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+  --accent: #5b7fff; --accent2: #a259ff; --accent3: #00e5c0;
+  --text: #eaeeff; --muted: #7b82a8; --muted2: #4a5070;
+  --danger: #ff5b5b; --success: #00e5a0; --warning: #ffb347;
+  --r: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; overflow-x: hidden; }
+
+
+.sidebar {
+  width: 230px; min-height: 100vh; background: var(--surface);
+  border-right: 1px solid var(--border); display: flex; flex-direction: column;
+  padding: 0; position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
+}
+.sidebar-logo {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.25rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  padding: 28px 22px 20px; border-bottom: 1px solid var(--border);
+}
+.sidebar-user {
+  padding: 16px 22px 12px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.2s;
+}
+.sidebar-user:hover { background: rgba(255,255,255,0.03); }
+.sidebar-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+  margin-bottom: 10px;
+}
+.sidebar-user-name { font-weight: 600; font-size: 0.92rem; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-email { font-size: 0.75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-badge {
+  display: inline-block; background: rgba(91,127,255,0.15); color: var(--accent);
+  font-size: 0.68rem; padding: 2px 8px; border-radius: 20px;
+  border: 1px solid rgba(91,127,255,0.3); margin-top: 6px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+nav { flex: 1; padding: 12px 0; }
+.nav-item {
+  display: flex; align-items: center; gap: 11px; padding: 11px 22px;
+  cursor: pointer; transition: all 0.18s; color: var(--muted);
+  font-size: 0.875rem; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.nav-item.active { color: var(--accent); background: rgba(91,127,255,0.09); border-left-color: var(--accent); }
+.nav-icon { font-size: 1rem; width: 18px; text-align: center; flex-shrink: 0; }
+.sidebar-bottom { padding: 16px 22px; border-top: 1px solid var(--border); }
+.logout-btn {
+  width: 100%; padding: 10px; background: rgba(255,91,91,0.1);
+  border: 1px solid rgba(255,91,91,0.22); border-radius: 8px;
+  color: var(--danger); font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+  cursor: pointer; transition: all 0.2s;
+}
+.logout-btn:hover { background: rgba(255,91,91,0.2); }
+
+
+.main { margin-left: 230px; flex: 1; padding: 32px 36px; min-height: 100vh; }
+.section { display: none; animation: fadeIn 0.25s ease; }
+.section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.page-title { font-family: 'Syne', sans-serif; font-size: 1.7rem; font-weight: 700; margin-bottom: 4px; }
+.page-subtitle { color: var(--muted); font-size: 0.88rem; margin-bottom: 28px; }
+
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 18px 20px; transition: border-color 0.2s;
+}
+.stat-card:hover { border-color: var(--border2); }
+.stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+.stat-value { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 700; line-height: 1; }
+.stat-value.grad { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.stat-value.green { color: var(--success); }
+.stat-value.warn { color: var(--warning); }
+.stat-sub { font-size: 0.75rem; color: var(--muted); margin-top: 5px; }
+.readiness-bar { background: var(--surface2); border-radius: 100px; height: 6px; margin-top: 10px; overflow: hidden; }
+.readiness-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 1.2s ease; }
+
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 22px 24px; margin-bottom: 18px; }
+.card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.97rem; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+
+.skill-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+.tag { padding: 4px 11px; border-radius: 20px; font-size: 0.78rem; border: 1px solid; }
+.tag-blue { background: rgba(91,127,255,0.1); border-color: rgba(91,127,255,0.3); color: var(--accent); }
+.tag-red { background: rgba(255,91,91,0.08); border-color: rgba(255,91,91,0.28); color: var(--danger); }
+.tag-green { background: rgba(0,229,160,0.08); border-color: rgba(0,229,160,0.28); color: var(--success); }
+.tag-gray { background: rgba(255,255,255,0.05); border-color: var(--border2); color: var(--muted); }
+
+
+.upload-zone {
+  border: 2px dashed var(--border2); border-radius: 12px; padding: 44px;
+  text-align: center; cursor: pointer; transition: all 0.22s; margin-bottom: 14px;
+}
+.upload-zone:hover, .upload-zone.dragging { border-color: var(--accent); background: rgba(91,127,255,0.04); }
+.upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.upload-text { color: var(--muted); font-size: 0.88rem; }
+.upload-text strong { color: var(--text); }
+
+
+.btn { padding: 11px 22px; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; border: none; display: inline-flex; align-items: center; gap: 7px; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 4px 14px rgba(91,127,255,0.25); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(91,127,255,0.35); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm { padding: 7px 14px; font-size: 0.8rem; border-radius: 7px; }
+
+
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+.form-input {
+  width: 100%; padding: 10px 13px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; outline: none; transition: border-color 0.2s;
+}
+.form-input:focus { border-color: rgba(91,127,255,0.5); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+
+.alert { padding: 11px 15px; border-radius: 9px; font-size: 0.83rem; margin-bottom: 14px; }
+.alert-error { background: rgba(255,91,91,0.1); border: 1px solid rgba(255,91,91,0.25); color: var(--danger); }
+.alert-success { background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.25); color: var(--success); }
+.alert-info { background: rgba(91,127,255,0.1); border: 1px solid rgba(91,127,255,0.25); color: var(--accent); }
+
+
+.spin { display: inline-block; width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: rot 0.7s linear infinite; }
+@keyframes rot { to { transform: rotate(360deg); } }
+
+
+.empty { text-align: center; padding: 32px; color: var(--muted); }
+.empty-icon { font-size: 2.8rem; margin-bottom: 10px; }
+.empty p { font-size: 0.87rem; }
+
+
+.role-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 14px; transition: border-color 0.2s;
+}
+.role-card:hover { border-color: var(--border2); }
+.role-emoji { font-size: 1.6rem; flex-shrink: 0; }
+.role-name { font-weight: 600; font-size: 0.92rem; margin-bottom: 3px; text-transform: capitalize; }
+.role-cat { font-size: 0.75rem; color: var(--muted); }
+.role-conf { margin-left: auto; text-align: right; flex-shrink: 0; }
+.role-conf-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; }
+.role-conf-label { font-size: 0.7rem; color: var(--muted); }
+.role-bar-wrap { background: var(--surface); border-radius: 100px; height: 4px; margin-top: 6px; overflow: hidden; flex: 1; }
+.role-bar { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(6,7,13,0.88);
+  backdrop-filter: blur(6px); z-index: 500;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 18px; width: 100%; max-width: 680px;
+  max-height: 85vh; overflow-y: auto; position: relative;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.modal-header {
+  padding: 22px 24px 16px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--surface); z-index: 10;
+}
+.modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; }
+.modal-close { background: none; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: all 0.2s; }
+.modal-close:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+.modal-body { padding: 22px 24px; }
+
+
+.roadmap-step {
+  display: flex; gap: 14px; padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.roadmap-step:last-child { border-bottom: none; }
+.step-num {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.82rem;
+}
+.step-skill { font-weight: 600; font-size: 0.92rem; margin-bottom: 6px; text-transform: capitalize; }
+.step-actions { list-style: none; }
+.step-actions li { font-size: 0.82rem; color: var(--muted); padding: 3px 0; display: flex; gap: 7px; align-items: flex-start; }
+.step-actions li::before { content: '→'; color: var(--accent3); flex-shrink: 0; }
+
+
+.gap-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px;
+}
+.gap-row:last-child { border-bottom: none; }
+.gap-skill { font-size: 0.88rem; font-weight: 500; flex: 1; }
+.gap-status { font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; border: 1px solid; flex-shrink: 0; }
+.gap-pct { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; width: 45px; text-align: right; }
+
+
+.profile-info-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.profile-info-row:last-child { border-bottom: none; }
+.profile-info-label { font-size: 0.8rem; color: var(--muted); }
+.profile-info-val { font-size: 0.88rem; font-weight: 500; }
+
+
+.activity { display: flex; align-items: center; gap: 8px; padding: 11px 14px; background: var(--surface2); border-radius: 9px; margin-bottom: 9px; }
+.activity-icon { font-size: 1.2rem; }
+.activity-text { font-size: 0.83rem; flex: 1; }
+.activity-time { font-size: 0.72rem; color: var(--muted); }
+
+
+@media (max-width: 900px) {
+  .sidebar { width: 200px; }
+  .main { margin-left: 200px; padding: 20px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .grid2 { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  body { display: block; }
+  .sidebar {
+    position: static; width: 100%; min-height: 0;
+    border-right: none; border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo { padding: 18px 18px 14px; }
+  .sidebar-user { padding: 14px 18px; }
+  nav { display: grid; grid-template-columns: 1fr 1fr; padding: 8px; gap: 6px; }
+  .nav-item { border-left: none; border-radius: 8px; padding: 10px 12px; }
+  .main { margin-left: 0; padding: 18px 14px; }
+  .stats-grid, .form-row { grid-template-columns: 1fr; }
+  .card { padding: 18px; }
+  .upload-zone { padding: 28px 16px; }
+}
+</style>
+</head>
+<body>
+
+
+<aside class="sidebar">
+  <div class="sidebar-logo">NexCareer</div>
+  <div class="sidebar-user" onclick="openProfileModal()" title="View Profile">
+    <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+    <div class="sidebar-user-name" id="sidebarName">Loading…</div>
+    <div class="sidebar-user-email" id="sidebarEmail">—</div>
+    <span class="sidebar-user-badge">Student</span>
+  </div>
+  <nav>
+    <div class="nav-item active" onclick="showSection('overview')"><span class="nav-icon">📊</span> Overview</div>
+    <div class="nav-item" onclick="showSection('upload')"><span class="nav-icon">📄</span> Upload Transcript</div>
+    <div class="nav-item" onclick="showSection('skills')"><span class="nav-icon">🧠</span> My Skills</div>
+    <div class="nav-item" onclick="showSection('profile')"><span class="nav-icon">👤</span> My Profile</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <button class="logout-btn" onclick="logout()">Sign Out</button>
+  </div>
+</aside>
+
+
+<main class="main">
+
+  
+  <section id="sec-overview" class="section active">
+    <div class="page-title">Welcome back, <span id="welcomeName">…</span> 👋</div>
+    <div class="page-subtitle">Your career readiness dashboard</div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Readiness Score</div>
+        <div class="stat-value grad" id="statReadiness">—</div>
+        <div class="stat-sub">Out of 100</div>
+        <div class="readiness-bar"><div class="readiness-fill" id="readinessBar" style="width:0%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Skills Extracted</div>
+        <div class="stat-value green" id="statSkills">—</div>
+        <div class="stat-sub">From transcript</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Missing Skills</div>
+        <div class="stat-value warn" id="statMissing">—</div>
+        <div class="stat-sub">For target role</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Files Uploaded</div>
+        <div class="stat-value" id="statCVs">—</div>
+        <div class="stat-sub">Transcripts / CVs</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">🎯 Recommended Roles</div>
+        <div id="recommendedRoles"><div class="empty"><p>Upload your transcript to see role recommendations</p></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 Latest Document</div>
+        <div id="latestCVInfo"><div class="empty"><div class="empty-icon">📄</div><p>No document uploaded yet</p></div></div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">⚡ Skill Gap Analysis
+          <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="openGapModal()">Open Analysis →</button>
+        </div>
+        <div id="overviewGapPreview"><div class="empty" style="padding:16px"><p>Set a career goal to see skill gap</p></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🗺️ Learning Roadmap
+          <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="openRoadmapModal()">View Roadmap →</button>
+        </div>
+        <div id="overviewRoadmapPreview"><div class="empty" style="padding:16px"><p>Upload transcript &amp; set goal to generate roadmap</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section id="sec-upload" class="section">
+    <div class="page-title">Upload Document</div>
+    <div class="page-subtitle">Upload your CV or academic transcript (PDF) to extract skills with AI</div>
+    <div class="card">
+      <div class="card-title">📤 Upload CV / Transcript</div>
+      <div class="upload-zone" id="uploadZone"
+        onclick="document.getElementById('cvFile').click()"
+        ondragover="event.preventDefault();this.classList.add('dragging')"
+        ondragleave="this.classList.remove('dragging')"
+        ondrop="handleDrop(event)">
+        <div class="upload-icon">📄</div>
+        <div class="upload-text"><strong>Click to choose</strong> or drag & drop</div>
+        <div class="upload-text" style="margin-top:6px;font-size:0.78rem">PDF files only · Max 10 MB</div>
+      </div>
+      <input type="file" id="cvFile" accept=".pdf" style="display:none" onchange="handleFileSelect(event)">
+      <div id="fileSelected" style="display:none;padding:11px;background:var(--surface2);border-radius:8px;margin-bottom:12px;font-size:0.85rem;color:var(--muted)"></div>
+      <div id="uploadAlertArea"></div>
+      <button class="btn btn-primary" id="uploadBtn" onclick="uploadCV()" disabled>
+        <span class="spin" id="uploadSpin" style="display:none"></span> Upload & Extract Skills
+      </button>
+    </div>
+    <div class="card" id="uploadResult" style="display:none">
+      <div class="card-title">✅ Extraction Result</div>
+      <div id="uploadResultContent"></div>
+    </div>
+  </section>
+
+  
+  <section id="sec-skills" class="section">
+    <div class="page-title">My Skills</div>
+    <div class="page-subtitle">Skills extracted from your uploaded documents</div>
+    <div class="card">
+      <div class="card-title">✅ Extracted Skills</div>
+      <div id="mySkillsList"><div class="empty"><p>Upload a transcript to see your skills</p></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">❌ Missing Skills
+        <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="openGapModal()">Full Analysis →</button>
+      </div>
+      <div id="missingSkillsCard"><div class="empty"><p>Set a career goal in My Profile</p></div></div>
+    </div>
+  </section>
+
+  
+  <section id="sec-profile" class="section">
+    <div class="page-title">My Profile</div>
+    <div class="page-subtitle">Update your academic information and career goals</div>
+    <div class="card">
+      <div class="card-title">🎓 Academic Info</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">University</label>
+          <input class="form-input" id="p_university" placeholder="e.g. SDU University">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Major</label>
+          <input class="form-input" id="p_major" placeholder="e.g. Computer Science">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Year of Study</label>
+          <input class="form-input" id="p_year" type="number" placeholder="3" min="1" max="6">
+        </div>
+        <div class="form-group">
+          <label class="form-label">GPA</label>
+          <input class="form-input" id="p_gpa" type="number" placeholder="3.5" step="0.1" min="0" max="4">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Career Goal (e.g. "ml engineer", "data analyst")</label>
+        <input class="form-input" id="p_goal" placeholder="e.g. backend developer">
+      </div>
+      <div id="profileAlertArea"></div>
+      <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
+    </div>
+  </section>
+
+</main>
+
+
+<div class="modal-overlay" id="profileModal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header">
+      <div class="modal-title">👤 My Profile</div>
+      <button class="modal-close" onclick="closeModal('profileModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+        <div class="sidebar-avatar" id="modalAvatar" style="width:52px;height:52px;font-size:1.3rem">?</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem" id="modalName">—</div>
+          <div style="font-size:0.82rem;color:var(--muted)" id="modalEmail">—</div>
+          <span class="sidebar-user-badge">Student</span>
+        </div>
+      </div>
+      <div id="profileInfoRows"></div>
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="closeModal('profileModal');showSection('profile')">Edit Profile</button>
+        <button class="btn btn-primary" onclick="closeModal('profileModal');showSection('upload')">Upload Document</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="gapModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">⚡ Skill Gap Analysis</div>
+      <button class="modal-close" onclick="closeModal('gapModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="gapModalContent">
+        <div class="empty"><div class="empty-icon">⚡</div><p>Loading analysis…</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="roadmapModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🗺️ Learning Roadmap</div>
+      <button class="modal-close" onclick="closeModal('roadmapModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="roadmapModalContent">
+        <div class="empty"><div class="empty-icon">🗺️</div><p>Loading roadmap…</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'http://localhost:8000';
+let state = {
+  user: null,
+  profile: null,
+  skills: [],
+  missingSkills: [],
+  recommendedRoles: [],
+  readinessScore: 0,
+  roadmap: [],
+  cvCount: 0,
+  lastCV: null,
+  token: localStorage.getItem('token'),
+};
+
+let selectedFile = null;
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }[ch]));
+}
+
+function normalizeSkills(skills) {
+  return [...new Set((skills || []).map(s => String(s).trim()).filter(Boolean))];
+}
+
+function clampPercent(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : 0;
+}
+window.addEventListener('DOMContentLoaded', () => {
+  if (!state.token) { window.location.href = 'login.html'; return; }
+  loadDashboard();
+});
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + id)?.classList.add('active');
+  const items = document.querySelectorAll('.nav-item');
+  items.forEach(n => { if (n.onclick?.toString().includes(id)) n.classList.add('active'); });
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+function openProfileModal() {
+  if (!state.user) return;
+  const initials = state.user.name?.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
+  document.getElementById('modalAvatar').textContent = initials;
+  document.getElementById('modalName').textContent = state.user.name || '—';
+  document.getElementById('modalEmail').textContent = state.user.email || '—';
+
+  const p = state.profile || {};
+  const rows = [
+    { label: 'University', val: p.university || '—' },
+    { label: 'Major', val: p.major || '—' },
+    { label: 'Year of Study', val: p.year_of_study ? `Year ${p.year_of_study}` : '—' },
+    { label: 'GPA', val: p.gpa || '—' },
+    { label: 'Career Goal', val: p.career_goal || '—' },
+    { label: 'Skills Found', val: state.skills.length ? `${state.skills.length} skills` : '—' },
+    { label: 'Readiness Score', val: state.readinessScore ? `${state.readinessScore} / 100` : '—' },
+  ];
+  document.getElementById('profileInfoRows').innerHTML = rows.map(r => `
+    <div class="profile-info-row">
+      <span class="profile-info-label">${escapeHTML(r.label)}</span>
+      <span class="profile-info-val">${escapeHTML(r.val)}</span>
+    </div>
+  `).join('');
+  openModal('profileModal');
+}
+
+function openGapModal() {
+  openModal('gapModal');
+  renderGapModal();
+}
+
+function openRoadmapModal() {
+  openModal('roadmapModal');
+  renderRoadmapModal();
+}
+async function loadDashboard() {
+  try {
+    const res = await apiFetch('/student/dashboard');
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) throw new Error(await getApiError(res, 'Could not load dashboard'));
+    const data = await res.json();
+    applyDashboard(data);
+  } catch (e) {
+    console.error(e);
+    showDashboardError(e.message);
+  }
+}
+
+function applyDashboard(data) {
+  state.user = data.user;
+  state.profile = data.profile;
+  state.skills = normalizeSkills(data.skills);
+  state.missingSkills = data.missing_skills || [];
+  state.recommendedRoles = data.recommended_roles || [];
+  state.readinessScore = data.readiness_score || 0;
+  state.roadmap = data.roadmap || [];
+  state.cvCount = data.cv_uploaded || 0;
+  state.lastCV = data.last_cv || null;
+
+  renderAll();
+}
+
+function showDashboardError(message) {
+  state.user = JSON.parse(localStorage.getItem('user') || 'null');
+  renderSidebar();
+  const error = escapeHTML(message || 'Could not connect to the backend.');
+  document.getElementById('recommendedRoles').innerHTML = `<div class="alert alert-error">${error}</div>`;
+  document.getElementById('latestCVInfo').innerHTML = '<div class="empty"><p>Dashboard data unavailable</p></div>';
+  document.getElementById('mySkillsList').innerHTML = '<div class="empty"><p>Dashboard data unavailable</p></div>';
+  document.getElementById('missingSkillsCard').innerHTML = '<div class="empty"><p>Dashboard data unavailable</p></div>';
+  document.getElementById('overviewGapPreview').innerHTML = '<div class="empty" style="padding:16px"><p>Dashboard data unavailable</p></div>';
+  document.getElementById('overviewRoadmapPreview').innerHTML = '<div class="empty" style="padding:16px"><p>Dashboard data unavailable</p></div>';
+}
+function renderAll() {
+  renderSidebar();
+  renderStats();
+  renderRecommendedRoles();
+  renderLatestCV();
+  renderMySkills();
+  renderMissingSkillsCard();
+  renderOverviewPreviews();
+  populateProfileForm();
+}
+
+function renderSidebar() {
+  const name = state.user?.name || '—';
+  const email = state.user?.email || '—';
+  const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sidebarAvatar').textContent = initials || '?';
+  document.getElementById('sidebarName').textContent = name;
+  document.getElementById('sidebarEmail').textContent = email;
+  document.getElementById('welcomeName').textContent = name.split(' ')[0] || 'there';
+}
+
+function renderStats() {
+  const safeScore = clampPercent(state.readinessScore);
+  document.getElementById('statReadiness').textContent = Number.isFinite(Number(state.readinessScore)) ? safeScore : '—';
+  document.getElementById('readinessBar').style.width = safeScore + '%';
+  document.getElementById('statSkills').textContent = state.skills.length;
+  document.getElementById('statMissing').textContent = state.missingSkills.length;
+  document.getElementById('statCVs').textContent = state.cvCount ?? '—';
+}
+
+function renderRecommendedRoles() {
+  const el = document.getElementById('recommendedRoles');
+  const roles = state.recommendedRoles;
+  if (!roles.length) { el.innerHTML = '<div class="empty"><p>Upload transcript for recommendations</p></div>'; return; }
+  el.innerHTML = roles.slice(0,3).map(r => {
+    const confidence = clampPercent(r.confidence ?? r.skill_match);
+    const skillMatch = clampPercent(r.skill_match);
+    const meta = r.recommendation_source === 'telegram_ml'
+      ? ` · Telegram ML${Number.isFinite(Number(r.skill_match)) ? ` · ${skillMatch}% skills` : ''}`
+      : '';
+    return `
+      <div class="role-card">
+        <div class="role-emoji">${escapeHTML(r.emoji || '🎯')}</div>
+        <div style="flex:1;min-width:0">
+          <div class="role-name">${escapeHTML(r.profession)}</div>
+          <div class="role-cat">${escapeHTML(r.category || '')}${meta}</div>
+          <div class="role-bar-wrap"><div class="role-bar" style="width:${confidence}%"></div></div>
+        </div>
+        <div class="role-conf">
+          <div class="role-conf-val" style="color:var(--accent)">${confidence}%</div>
+          <div class="role-conf-label">confidence</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderLatestCV() {
+  const el = document.getElementById('latestCVInfo');
+  const cv = state.lastCV;
+  if (!cv) { el.innerHTML = '<div class="empty"><div class="empty-icon">📄</div><p>No document uploaded yet</p></div>'; return; }
+  const skills = cv.skills || [];
+  el.innerHTML = `
+    <div style="padding:14px;background:var(--surface2);border-radius:10px;margin-bottom:12px">
+      <div style="font-weight:600;font-size:0.9rem;margin-bottom:4px">📄 ${escapeHTML(cv.filename)}</div>
+      <div style="font-size:0.75rem;color:var(--muted)">${new Date(cv.uploaded_at).toLocaleDateString()} · ${skills.length} skills extracted</div>
+    </div>
+    <div class="skill-tags">${skills.slice(0,8).map(s=>`<span class="tag tag-blue">${escapeHTML(s)}</span>`).join('')}${skills.length>8?`<span class="tag tag-gray">+${skills.length-8}</span>`:''}</div>
+  `;
+}
+
+function renderMySkills() {
+  const el = document.getElementById('mySkillsList');
+  const skills = state.skills;
+  if (!skills.length) { el.innerHTML = '<div class="empty"><p>Upload a transcript to extract skills</p></div>'; return; }
+  el.innerHTML = `<div class="skill-tags">${skills.map(s=>`<span class="tag tag-blue">${escapeHTML(s)}</span>`).join('')}</div>`;
+}
+
+function renderMissingSkillsCard() {
+  const el = document.getElementById('missingSkillsCard');
+  const missing = state.missingSkills;
+  if (!missing.length) { el.innerHTML = '<div class="empty"><p>Set a career goal to see missing skills</p></div>'; return; }
+  el.innerHTML = `<div class="skill-tags">${missing.map(s=>`<span class="tag tag-red">${escapeHTML(s)}</span>`).join('')}</div>`;
+}
+
+function renderOverviewPreviews() {
+  const gapEl = document.getElementById('overviewGapPreview');
+  const missing = state.missingSkills;
+  if (!missing.length) {
+    gapEl.innerHTML = '<div class="empty" style="padding:16px"><p>Set career goal in profile</p></div>';
+  } else {
+    gapEl.innerHTML = `<div class="skill-tags">${missing.slice(0,5).map(s=>`<span class="tag tag-red">${escapeHTML(s)}</span>`).join('')}${missing.length>5?`<span class="tag tag-gray">+${missing.length-5} more</span>`:''}</div>`;
+  }
+  const rmEl = document.getElementById('overviewRoadmapPreview');
+  if (!state.missingSkills.length) {
+    rmEl.innerHTML = '<div class="empty" style="padding:16px"><p>Upload transcript &amp; set goal first</p></div>';
+  } else {
+    const goal = state.profile?.career_goal || 'your target role';
+    rmEl.innerHTML = `<div style="font-size:0.85rem;color:var(--muted)">Roadmap ready for <strong style="color:var(--text)">${escapeHTML(goal)}</strong> — ${state.missingSkills.length} skills to learn</div>`;
+  }
+}
+function renderGapModal() {
+  const el = document.getElementById('gapModalContent');
+  const skills = state.skills;
+  const missing = state.missingSkills;
+  const goal = state.profile?.career_goal;
+
+  if (!goal) {
+    el.innerHTML = `<div class="alert alert-info">Please set a career goal in <strong>My Profile</strong> first.</div>`;
+    return;
+  }
+  if (!skills.length) {
+    el.innerHTML = `<div class="alert alert-info">Please upload your transcript first to extract skills.</div>`;
+    return;
+  }
+  const roleSkills = getRoleSkills(goal);
+  const matched = roleSkills.filter(s => skills.some(sk => sk.toLowerCase().includes(s) || s.includes(sk.toLowerCase())));
+  const gap = roleSkills.filter(s => !matched.includes(s));
+  const extra = skills.filter(s => !roleSkills.some(rs => s.toLowerCase().includes(rs) || rs.includes(s.toLowerCase())));
+  const pct = roleSkills.length ? Math.round(matched.length / roleSkills.length * 100) : 0;
+
+  el.innerHTML = `
+    <div style="margin-bottom:18px">
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:6px">Target Role</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;text-transform:capitalize">${escapeHTML(goal)}</div>
+    </div>
+    <div style="display:flex;gap:14px;margin-bottom:20px">
+      <div style="flex:1;background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:700;color:var(--success)">${matched.length}</div>
+        <div style="font-size:0.75rem;color:var(--muted)">Matched Skills</div>
+      </div>
+      <div style="flex:1;background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:700;color:var(--danger)">${gap.length}</div>
+        <div style="font-size:0.75rem;color:var(--muted)">Missing Skills</div>
+      </div>
+      <div style="flex:1;background:var(--surface2);border-radius:10px;padding:14px;text-align:center">
+        <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:700;color:var(--accent)">${pct}%</div>
+        <div style="font-size:0.75rem;color:var(--muted)">Match Rate</div>
+      </div>
+    </div>
+    <div class="readiness-bar" style="height:8px;margin-bottom:20px"><div class="readiness-fill" style="width:${pct}%"></div></div>
+
+    ${matched.length ? `
+    <div style="margin-bottom:16px">
+      <div style="font-weight:600;font-size:0.88rem;margin-bottom:8px;color:var(--success)">✅ Skills You Have</div>
+      <div class="skill-tags">${matched.map(s=>`<span class="tag tag-green">${escapeHTML(s)}</span>`).join('')}</div>
+    </div>` : ''}
+
+    ${gap.length ? `
+    <div style="margin-bottom:16px">
+      <div style="font-weight:600;font-size:0.88rem;margin-bottom:8px;color:var(--danger)">❌ Skills to Acquire</div>
+      <div class="skill-tags">${gap.map(s=>`<span class="tag tag-red">${escapeHTML(s)}</span>`).join('')}</div>
+    </div>` : ''}
+
+    ${extra.length ? `
+    <div>
+      <div style="font-weight:600;font-size:0.88rem;margin-bottom:8px;color:var(--muted)">➕ Additional Skills You Have</div>
+      <div class="skill-tags">${extra.slice(0,10).map(s=>`<span class="tag tag-gray">${escapeHTML(s)}</span>`).join('')}</div>
+    </div>` : ''}
+
+    <div style="margin-top:18px">
+      <button class="btn btn-primary" onclick="closeModal('gapModal');openRoadmapModal()">Generate Learning Roadmap →</button>
+    </div>
+  `;
+}
+async function renderRoadmapModal() {
+  const el = document.getElementById('roadmapModalContent');
+
+  el.innerHTML = `
+    <div style="text-align:center;padding:32px">
+      <div class="spin" style="width:28px;height:28px;border-width:3px;margin:0 auto 14px"></div>
+      <div style="color:var(--muted);font-size:0.88rem">Loading your personalized roadmap...</div>
+    </div>
+  `;
+
+  try {
+    const data = await loadRoadmapFromApi();
+    const roadmap = data.roadmap || [];
+    const goal = data.target_role || state.profile?.career_goal || '';
+    const currentSkills = data.current_skills || state.skills || [];
+    const missing = data.missing_skills || [];
+
+    if (!goal) {
+      el.innerHTML = `<div class="alert alert-info">Set a career goal in <strong>My Profile</strong> first.</div>`;
+      return;
+    }
+    if (!currentSkills.length) {
+      el.innerHTML = `<div class="alert alert-info">Upload your transcript first to extract skills.</div>`;
+      return;
+    }
+    if (!roadmap.length) {
+      el.innerHTML = `<div class="alert alert-info">No missing skills found for <strong>${escapeHTML(goal)}</strong>. Your profile already matches this target well.</div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div style="margin-bottom:18px">
+        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:4px">Target Role</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;text-transform:capitalize">${escapeHTML(goal)}</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:6px">${missing.length} skills to learn · Estimated 3-6 months</div>
+      </div>
+      <div>${roadmap.map((step, i) => `
+        <div class="roadmap-step">
+          <div class="step-num">${i+1}</div>
+          <div>
+            <div class="step-skill">${escapeHTML(step.skill)}</div>
+            <ul class="step-actions">${(step.actions || []).map(a => `<li>${escapeHTML(a)}</li>`).join('')}</ul>
+          </div>
+        </div>
+      `).join('')}</div>
+    `;
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">${escapeHTML(e.message || 'Could not load roadmap')}</div>`;
+  }
+}
+
+async function loadRoadmapFromApi() {
+  const res = await apiFetch('/student/roadmap');
+  if (res.status === 401) { logout(); return {}; }
+  if (!res.ok) throw new Error(await getApiError(res, 'Could not generate roadmap'));
+  const data = await res.json();
+  state.roadmap = data.roadmap || [];
+  state.missingSkills = data.missing_skills || [];
+  state.skills = normalizeSkills(data.current_skills || state.skills);
+  if (data.target_role) {
+    state.profile = { ...(state.profile || {}), career_goal: data.target_role };
+  }
+  renderOverviewPreviews();
+  return data;
+}
+function getRoleSkills(goal) {
+  const map = {
+    'ml engineer': ['python', 'tensorflow', 'pytorch', 'docker', 'mlops', 'sql', 'machine learning', 'linux'],
+    'data scientist': ['python', 'machine learning', 'statistics', 'pandas', 'sql', 'visualization', 'deep learning'],
+    'data analyst': ['sql', 'excel', 'python', 'tableau', 'statistics', 'visualization', 'reporting'],
+    'data engineer': ['python', 'sql', 'spark', 'airflow', 'postgresql', 'docker', 'etl'],
+    'backend developer': ['python', 'fastapi', 'postgresql', 'docker', 'rest api', 'sql', 'linux'],
+    'frontend developer': ['javascript', 'react', 'typescript', 'html', 'css', 'git'],
+    'fullstack developer': ['javascript', 'react', 'python', 'postgresql', 'docker', 'html', 'css'],
+    'devops engineer': ['docker', 'kubernetes', 'aws', 'linux', 'terraform', 'ci/cd', 'bash'],
+    'mobile developer': ['swift', 'kotlin', 'react native', 'flutter', 'mobile', 'git'],
+    'qa engineer': ['selenium', 'python', 'sql', 'postman', 'ci/cd', 'testing'],
+    'product manager': ['product strategy', 'analytics', 'agile', 'scrum', 'jira', 'figma'],
+    'designer': ['figma', 'ux', 'prototyping', 'user research', 'design systems', 'adobe'],
+    'security engineer': ['security', 'networking', 'linux', 'cryptography', 'penetration testing'],
+  };
+  const goalLower = goal.toLowerCase();
+  for (const [role, skills] of Object.entries(map)) {
+    if (goalLower.includes(role) || role.includes(goalLower)) return skills;
+  }
+  return ['python', 'sql', 'git', 'linux', 'communication'];
+}
+function populateProfileForm() {
+  const p = state.profile || {};
+  document.getElementById('p_university').value = p.university || '';
+  document.getElementById('p_major').value = p.major || '';
+  document.getElementById('p_year').value = p.year_of_study || '';
+  document.getElementById('p_gpa').value = p.gpa || '';
+  document.getElementById('p_goal').value = p.career_goal || '';
+}
+
+async function saveProfile() {
+  const body = {
+    university: document.getElementById('p_university').value,
+    major: document.getElementById('p_major').value,
+    year_of_study: parseInt(document.getElementById('p_year').value) || null,
+    gpa: parseFloat(document.getElementById('p_gpa').value) || null,
+    career_goal: document.getElementById('p_goal').value,
+  };
+  const alertEl = document.getElementById('profileAlertArea');
+  try {
+    const res = await apiFetch('/student/profile', { method: 'POST', body: JSON.stringify(body) });
+    if (res.status === 401) { logout(); return; }
+    if (res.ok) {
+      const data = await res.json();
+      state.profile = { ...state.profile, ...body };
+      state.missingSkills = data.missing_skills || [];
+      state.readinessScore = data.readiness_score || 0;
+      state.recommendedRoles = data.recommended_roles || state.recommendedRoles;
+      renderAll();
+      alertEl.innerHTML = `<div class="alert alert-success">✅ Profile saved successfully!</div>`;
+      setTimeout(() => alertEl.innerHTML = '', 3000);
+    } else {
+      throw new Error(await getApiError(res, 'Save failed'));
+    }
+  } catch(e) {
+    alertEl.innerHTML = `<div class="alert alert-error">${escapeHTML(e.message)}</div>`;
+  }
+}
+
+function getMissingFromGoal(skills, goal) {
+  if (!goal) return [];
+  const roleSkills = getRoleSkills(goal);
+  return roleSkills.filter(s => !skills.some(sk => sk.toLowerCase().includes(s) || s.includes(sk.toLowerCase())));
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('dragging');
+  const file = e.dataTransfer?.files[0];
+  if (file) setSelectedFile(file);
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) setSelectedFile(file);
+}
+
+function setSelectedFile(file) {
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    document.getElementById('uploadAlertArea').innerHTML = `<div class="alert alert-error">Only PDF files are supported.</div>`;
+    return;
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    document.getElementById('uploadAlertArea').innerHTML = `<div class="alert alert-error">PDF must be 10 MB or smaller.</div>`;
+    return;
+  }
+  selectedFile = file;
+  const sel = document.getElementById('fileSelected');
+  sel.style.display = 'block';
+  sel.innerHTML = `📄 <strong>${escapeHTML(file.name)}</strong> · ${(file.size/1024).toFixed(0)} KB`;
+  document.getElementById('uploadBtn').disabled = false;
+  document.getElementById('uploadAlertArea').innerHTML = '';
+}
+
+async function uploadCV() {
+  if (!selectedFile) return;
+  const btn = document.getElementById('uploadBtn');
+  const spin = document.getElementById('uploadSpin');
+  btn.disabled = true;
+  spin.style.display = 'inline-block';
+
+  try {
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    const res = await fetch(`${API_BASE}/student/upload-transcript`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${state.token}` },
+      body: formData,
+    });
+    if (res.status === 401) { logout(); return; }
+    if (!res.ok) throw new Error(await getApiError(res, 'Upload failed'));
+
+    const data = await res.json();
+    const skills = normalizeSkills(data.skills_found);
+    state.skills = normalizeSkills(data.all_skills || [...state.skills, ...skills]);
+    state.cvCount = (state.cvCount || 0) + 1;
+    state.lastCV = { filename: data.filename || selectedFile.name, skills, uploaded_at: data.uploaded_at || new Date().toISOString() };
+    state.missingSkills = data.missing_skills || [];
+    state.readinessScore = data.readiness_score || 0;
+    state.recommendedRoles = data.recommended_roles || [];
+
+    renderAll();
+
+    document.getElementById('uploadResult').style.display = 'block';
+    document.getElementById('uploadResultContent').innerHTML = `
+      <div class="alert alert-success" style="margin-bottom:12px">✅ Successfully extracted <strong>${skills.length} skills</strong> from ${escapeHTML(selectedFile.name)}</div>
+      <div class="skill-tags">${skills.map(s=>`<span class="tag tag-blue">${escapeHTML(s)}</span>`).join('')}</div>
+    `;
+    document.getElementById('uploadAlertArea').innerHTML = '';
+    selectedFile = null;
+    document.getElementById('fileSelected').style.display = 'none';
+    document.getElementById('cvFile').value = '';
+  } catch(e) {
+    document.getElementById('uploadAlertArea').innerHTML = `<div class="alert alert-error">Upload failed: ${escapeHTML(e.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+    spin.style.display = 'none';
+  }
+}
+
+function calculateReadiness(skills, goal) {
+  if (!goal || !skills.length) return skills.length * 5;
+  const roleSkills = getRoleSkills(goal);
+  const matched = roleSkills.filter(s => skills.some(sk => sk.includes(s) || s.includes(sk)));
+  return Math.min(100, Math.round((matched.length / roleSkills.length) * 100));
+}
+
+function getRecommendedRoles(skills) {
+  const allRoles = {
+    'ml engineer': { emoji:'🤖', category:'AI/ML', keywords:['machine learning','tensorflow','pytorch','python','deep learning'] },
+    'data scientist': { emoji:'🔬', category:'Data', keywords:['statistics','pandas','machine learning','python','data analysis'] },
+    'data analyst': { emoji:'📊', category:'Data', keywords:['sql','excel','tableau','statistics','visualization'] },
+    'backend developer': { emoji:'⚙️', category:'Engineering', keywords:['python','fastapi','postgresql','rest api','docker'] },
+    'frontend developer': { emoji:'🎨', category:'Engineering', keywords:['javascript','react','typescript','html','css'] },
+    'devops engineer': { emoji:'🛠️', category:'Infrastructure', keywords:['docker','kubernetes','aws','linux','ci/cd'] },
+    'data engineer': { emoji:'🔧', category:'Data', keywords:['spark','airflow','sql','etl','python'] },
+  };
+  const skillsLower = skills.map(s=>s.toLowerCase());
+  return Object.entries(allRoles).map(([role, meta]) => {
+    const matched = meta.keywords.filter(k => skillsLower.some(s => s.includes(k) || k.includes(s)));
+    const pct = Math.round(matched.length / meta.keywords.length * 100);
+    return { profession: role, emoji: meta.emoji, category: meta.category, skill_match: pct, confidence: pct };
+  }).sort((a,b) => b.skill_match - a.skill_match).slice(0,4);
+}
+function apiFetch(path, options = {}) {
+  return fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      'Authorization': `Bearer ${state.token}`,
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    }
+  });
+}
+
+async function getApiError(res, fallback) {
+  try {
+    const data = await res.json();
+    return data.detail || data.message || fallback;
+  } catch {
+    return fallback;
+  }
+}
+function logout() {
+  localStorage.removeItem('token');
+  sessionStorage.clear();
+  window.location.href = 'login.html';
+}
+</script>
+</body>
+</html>
+
