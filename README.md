@@ -207,5 +207,8 @@ curl -X GET "http://127.0.0.1:8000/jobs?query=python&per_page=10" \
 
 
 
-
-** Thank you for using NexCareer!**
+TEAM MEMBERS:  
+Aibibi Oraz 230103326
+Aknur Aubakir 230103267
+Birganym Bekbossyn 230103217
+Ayazhan Zhexenbek 230103353
