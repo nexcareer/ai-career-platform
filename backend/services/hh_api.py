@@ -9,7 +9,7 @@ from typing import List, Dict
 HH_API_BASE = "https://api.hh.ru"
 _LOCAL_DATASET: List[Dict] = []
 _TELEGRAM_DATASET: List[Dict] = []
-TELEGRAM_CSV_PATH = Path(__file__).resolve().parents[1] / "telegram_all_posts.csv"
+TELEGRAM_CSV_PATH = Path(__file__).resolve().parents[1] / "telegram_all_jobs.csv"
 
 
 def _load_local_dataset() -> List[Dict]:
