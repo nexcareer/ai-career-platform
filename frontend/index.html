@@ -54,7 +54,6 @@
     font-family: 'Syne', sans-serif;
     font-weight: 800; font-size: 1.4rem;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    background-clip: text;
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     letter-spacing: -0.5px;
   }
@@ -134,7 +133,6 @@
   }
   .hero h1 .grad {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
-    background-clip: text;
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
   .hero p {
@@ -171,12 +169,11 @@
   .stat-num {
     font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
     background: linear-gradient(135deg, var(--text), var(--accent));
-    background-clip: text;
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
   .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
 
-  /* ─── ROLES SECTION ─── */
+  
   section { position: relative; z-index: 1; padding: 100px 48px; }
 
   .section-label {
@@ -314,7 +311,7 @@
     fill: none; stroke-width: 10; stroke-linecap: round;
     stroke: url(#scoreGrad);
     stroke-dasharray: 377;
-    stroke-dashoffset: 83; /* 377 * (1 - 0.78) */
+    stroke-dashoffset: 83; 
     transition: stroke-dashoffset 1s ease;
   }
   .score-center {
@@ -324,7 +321,6 @@
   .score-pct {
     font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    background-clip: text;
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
   .score-lbl { font-size: 0.7rem; color: var(--muted); }
@@ -501,7 +497,6 @@
   .footer-logo {
     font-family: 'Syne', sans-serif; font-weight: 800;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
-    background-clip: text;
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
   .footer-copy { font-size: 0.82rem; color: var(--muted); }
@@ -542,7 +537,7 @@
 <body>
 
 <nav>
-  <div class="logo">Nex<span>Career</span></div>
+  <div class="logo">Nexus<span>Hire</span></div>
   <div class="nav-links">
     <a href="#roles">Roles</a>
     <a href="#demo">Dashboard</a>
@@ -574,8 +569,10 @@
   </div>
 
   <div class="stats-row">
+    <div class="stat"><div class="stat-num">10K+</div><div class="stat-label">Jobs from HH</div></div>
     <div class="stat"><div class="stat-num">94%</div><div class="stat-label">Matching Accuracy</div></div>
     <div class="stat"><div class="stat-num">3×</div><div class="stat-label">Faster Hiring</div></div>
+    <div class="stat"><div class="stat-num">BERT</div><div class="stat-label">Semantic AI</div></div>
   </div>
 </section>
 
@@ -782,7 +779,7 @@
           </table>
           <div class="hh-badge" style="margin:16px 24px;">
             <div class="hh-dot"></div>
-            data from HeadHunter
+            Live data from HeadHunter API
           </div>
         </div>
       </div>
@@ -905,7 +902,7 @@
     </div>
   </div>
 
-  <!-- EMPLOYER PANEL -->
+  
   <div class="demo-panel" id="panel-employer">
     <div class="dashboard-grid">
       <div class="sidebar">
@@ -1020,6 +1017,51 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="section-label reveal">Technology</div>
+  <div class="section-title reveal">The AI Engine Under the Hood</div>
+  <div class="section-sub reveal">Not buzzwords — a real working stack, from Sentence-BERT to HH API.</div>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">🧬</div>
+      <div class="feature-title">Semantic Matching</div>
+      <div class="feature-desc">Sentence-BERT compares the meaning of CVs and job listings — not just keywords. "Python development" = "Python development".</div>
+      <span class="feature-tag">Sentence-BERT</span>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔍</div>
+      <div class="feature-title">Skill Extraction</div>
+      <div class="feature-desc">spaCy automatically parses CVs and job listings, extracting technologies, tools, and competencies without manual labeling.</div>
+      <span class="feature-tag">spaCy NLP</span>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Job Match Score</div>
+      <div class="feature-desc">Probability of a candidate-job match with an explanation: what matched, what's missing, and how to fix it.</div>
+      <span class="feature-tag">scikit-learn</span>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🌐</div>
+      <div class="feature-title">HeadHunter API</div>
+      <div class="feature-desc">Real jobs in real time. Not mock data — live market requirements from the largest job database in the CIS.</div>
+      <span class="feature-tag">HH.ru API</span>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📉</div>
+      <div class="feature-title">Skill Gap Analysis</div>
+      <div class="feature-desc">Shows which skills are missing, how often they're required by job listings, and the priority of each for career growth.</div>
+      <span class="feature-tag">Embeddings</span>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🏗️</div>
+      <div class="feature-title">FastAPI Backend</div>
+      <div class="feature-desc">High-performance Python API. CV parser, Job parser, Matching engine, and Recommendation system — all in one service.</div>
+      <span class="feature-tag">FastAPI + SQLite</span>
     </div>
   </div>
 </section>
