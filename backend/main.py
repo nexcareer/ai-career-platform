@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from database import engine
 from models import Base
 from routes.auth_routes import router as auth_router
@@ -8,8 +9,6 @@ from routes.student_routes import router as student_router
 from routes.professional_routes import router as professional_router
 from routes.employer_routes import router as employer_router
 from routes.job_routes import router as job_router
-
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="NexCareer API",
@@ -24,6 +23,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+
 
 app.include_router(auth_router)
 app.include_router(cv_router)
@@ -40,5 +45,7 @@ def root():
 
 @app.get("/health", tags=["Health"])
 def health():
-    from datetime import datetime
-    return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+    return {"status": "healthy"}
+
+
+app.mount("/", StaticFiles(directory="../frontend", html=True), name="frontend")
