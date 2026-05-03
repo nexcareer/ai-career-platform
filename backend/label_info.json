@@ -1,0 +1,23 @@
+{
+  "model": "LinearSVC + TF-IDF (ngram 1-3)",
+  "accuracy": 0.9201,
+  "total_labeled": 2063,
+  "classes": {
+    "data analyst": 311,
+    "data scientist": 246,
+    "frontend developer": 237,
+    "qa engineer": 231,
+    "data engineer": 188,
+    "devops engineer": 136,
+    "backend developer": 131,
+    "designer": 113,
+    "product manager": 110,
+    "project manager": 101,
+    "mobile developer": 93,
+    "ml engineer": 78,
+    "fullstack developer": 72,
+    "sales manager": 11,
+    "security engineer": 5
+  },
+  "trained_on": "telegram_all_posts.csv"
+}
