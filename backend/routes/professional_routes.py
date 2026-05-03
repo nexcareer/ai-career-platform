@@ -70,7 +70,7 @@ def _top_telegram_matches(
             "candidate_level": candidate_level,
             "job_level": match.get("job_level", "unknown"),
             "seniority_status": match.get("seniority_status", "unknown"),
-            "recommendation_source": "telegram_all_posts.csv",
+            "recommendation_source": "telegram_all_jobs.csv",
         })
 
     scored_jobs.sort(
